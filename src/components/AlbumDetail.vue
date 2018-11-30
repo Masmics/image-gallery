@@ -18,17 +18,21 @@
                     </label>
                     <button type="submit">Add</button>
                 </form>
-            <button @click="showModal = false">Close</button>
+            <button @click="onCancel">Close</button>
             </div>
         </div>
-        <Thumbnails :images="album.images"/>
+        <nav>
+            <RouterLink to="./thumbnail">Thumbnail</RouterLink>
+            <RouterLink to="./list">List</RouterLink>
+            <RouterLink to="./gallery">Gallery</RouterLink>
+        </nav>
+
+    <RouterView :images="album.images">DEFAULT VIEW</RouterView>
     </section>
 </template>
 
 <script>
 import albumApi from '../services/albumsApi.js';
-import Thumbnails from './Thumbnails';
-
 export default {
     data() {
         return {
@@ -37,17 +41,18 @@ export default {
             image: {}
         };
     },
-    components: {
-        Thumbnails
-    },
+    components: {},
     created() {
         this.album = albumApi.getAlbum(this.$route.params.id);
     },
     methods: {
         handleAdd() {
-            this.album.images.push(this.image);
-            this.showModal = false;
+            albumApi.addImage(this.album, this.image);
+            this.onCancel();
+        },
+        onCancel() {
             this.image = {};
+            this.showModal = false;
         }
     }
     
